@@ -1,0 +1,7 @@
+{
+  "name": "Gestor One - Controle de Estoque",
+  "description": "Sistema de estoque com entradas, saídas e consumo para uma revendedora de ferramentas.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
