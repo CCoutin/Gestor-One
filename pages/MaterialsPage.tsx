@@ -39,6 +39,7 @@ const MaterialsPage: React.FC = () => {
     armazenamento: '',
     valorUnitario: 0,
     imageUrl: '',
+    categoria: 'ferramenta',
   };
   const [currentMaterial, setCurrentMaterial] = useState(initialFormState);
   const [materialToEdit, setMaterialToEdit] = useState<Material | null>(null);
@@ -84,7 +85,7 @@ const MaterialsPage: React.FC = () => {
     setMaterialToDelete(null);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setCurrentMaterial(prev => ({ 
       ...prev, 
@@ -403,15 +404,24 @@ const MaterialsPage: React.FC = () => {
                         <input type="text" name="codigoFabricante" value={currentMaterial.codigoFabricante} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400" required />
                     </div>
                      <div>
-                        <label htmlFor="quantidade" className="block text-sm font-medium text-slate-700">Quantidade</label>
-                        <input type="number" name="quantidade" value={currentMaterial.quantidade} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400" required />
+                        <label htmlFor="categoria" className="block text-sm font-medium text-slate-700">Categoria</label>
+                        <select name="categoria" value={currentMaterial.categoria} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 focus:border-blue-500 focus:outline-none sm:text-sm">
+                            <option value="ferramenta">Ferramenta</option>
+                            <option value="consumivel">Consumível</option>
+                        </select>
                     </div>
                 </div>
                  <div className="grid grid-cols-2 gap-4">
                     <div>
+                        <label htmlFor="quantidade" className="block text-sm font-medium text-slate-700">Quantidade</label>
+                        <input type="number" name="quantidade" value={currentMaterial.quantidade} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400" required />
+                    </div>
+                    <div>
                         <label htmlFor="armazenamento" className="block text-sm font-medium text-slate-700">Local</label>
                         <input type="text" name="armazenamento" value={currentMaterial.armazenamento} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400" required />
                     </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                      <div>
                         <label htmlFor="valorUnitario" className="block text-sm font-medium text-slate-700">Valor Unitário (R$)</label>
                         <input type="number" name="valorUnitario" value={currentMaterial.valorUnitario} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400" min="0.01" step="0.01" required />

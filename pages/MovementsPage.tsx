@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo } from 'react';
 import Card from '../components/ui/Card';
 import Table from '../components/ui/Table';
@@ -8,7 +10,7 @@ import PlusIcon from '../components/icons/PlusIcon';
 import PencilIcon from '../components/icons/PencilIcon';
 import TrashIcon from '../components/icons/TrashIcon';
 import Modal from '../components/ui/Modal';
-import { BoxIcon, HashtagIcon, UserIcon, CalendarDaysIcon, DocumentTextIcon } from '../components/icons/HeroIcons';
+import { BoxIcon, HashtagIcon, UserIcon, CalendarDaysIcon, DocumentTextIcon, CurrencyDollarIcon } from '../components/icons/HeroIcons';
 
 interface MovementsPageProps {
   type: MovimentacaoTipo;
@@ -60,6 +62,7 @@ const MovementsPage: React.FC<MovementsPageProps> = ({ type }) => {
   const initialFormState = {
     material: '',
     quantidade: 0,
+    valorTotal: 0,
     colaborador: '',
     data: new Date().toISOString().split('T')[0],
     notaFiscal: '',
@@ -71,7 +74,24 @@ const MovementsPage: React.FC<MovementsPageProps> = ({ type }) => {
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setCurrentMovement(prev => ({ ...prev, [name]: name === 'quantidade' ? parseInt(value, 10) || 0 : value }));
+    
+    setCurrentMovement(prev => {
+        const newData = { ...prev, [name]: name === 'quantidade' || name === 'valorTotal' ? parseFloat(value) || 0 : value };
+        
+        // Auto-cálculo do Valor Total Sugerido
+        if (name === 'material' || name === 'quantidade') {
+             const matName = name === 'material' ? value : prev.material;
+             const qty = name === 'quantidade' ? (parseFloat(value) || 0) : prev.quantidade;
+             
+             const mat = mockMateriais.find(m => m.nome === matName);
+             if (mat) {
+                 // Atualiza valor total com base no preço unitário, a menos que o usuário edite o total depois
+                 newData.valorTotal = mat.valorUnitario * qty;
+             }
+        }
+        
+        return newData;
+    });
   };
 
   const isFormValid = currentMovement.material && currentMovement.colaborador && currentMovement.quantidade > 0 && currentMovement.data;
@@ -84,9 +104,15 @@ const MovementsPage: React.FC<MovementsPageProps> = ({ type }) => {
   
   const handleOpenEditModal = (movement: Movimentacao) => {
     setMovementToEdit(movement);
+    // Calcular valor total se não existir no registro antigo (fallback)
+    const materialInfo = mockMateriais.find(m => m.nome === movement.material);
+    const unitPrice = materialInfo ? materialInfo.valorUnitario : 0;
+    const existingTotal = movement.valorTotal !== undefined ? movement.valorTotal : (movement.quantidade * unitPrice);
+
     setCurrentMovement({
       material: movement.material,
       quantidade: movement.quantidade,
+      valorTotal: existingTotal,
       colaborador: movement.colaborador,
       data: movement.data,
       notaFiscal: movement.notaFiscal || '',
@@ -133,6 +159,10 @@ const MovementsPage: React.FC<MovementsPageProps> = ({ type }) => {
   }
 
   const getMovementValue = (movement: Movimentacao) => {
+      // Prioridade: Valor Total Salvo > Calculado
+      if (movement.valorTotal !== undefined) {
+          return movement.valorTotal;
+      }
       const material = mockMateriais.find(m => m.nome === movement.material);
       const unitPrice = material ? material.valorUnitario : 0;
       return unitPrice * movement.quantidade;
@@ -215,23 +245,45 @@ const MovementsPage: React.FC<MovementsPageProps> = ({ type }) => {
                     </div>
                 </div>
 
-                {/* Quantidade */}
-                 <div>
-                    <label htmlFor="quantidade" className="block text-sm font-medium text-slate-700">Quantidade</label>
-                    <div className="mt-1 relative">
-                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <HashtagIcon className="h-5 w-5 text-slate-400" />
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Quantidade */}
+                    <div>
+                        <label htmlFor="quantidade" className="block text-sm font-medium text-slate-700">Quantidade</label>
+                        <div className="mt-1 relative">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <HashtagIcon className="h-5 w-5 text-slate-400" />
+                            </div>
+                            <input 
+                                type="number" 
+                                id="quantidade" 
+                                name="quantidade" 
+                                value={currentMovement.quantidade} 
+                                onChange={handleInputChange}
+                                className="block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 pl-10 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400"
+                                min="1"
+                                required
+                            />
                         </div>
-                        <input 
-                            type="number" 
-                            id="quantidade" 
-                            name="quantidade" 
-                            value={currentMovement.quantidade} 
-                            onChange={handleInputChange}
-                            className="block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 pl-10 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400"
-                            min="1"
-                            required
-                        />
+                    </div>
+
+                    {/* Valor Total (Novo) */}
+                    <div>
+                        <label htmlFor="valorTotal" className="block text-sm font-medium text-slate-700">Valor Total (R$)</label>
+                        <div className="mt-1 relative">
+                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <CurrencyDollarIcon className="h-5 w-5 text-slate-400" />
+                            </div>
+                            <input 
+                                type="number" 
+                                id="valorTotal" 
+                                name="valorTotal" 
+                                value={currentMovement.valorTotal} 
+                                onChange={handleInputChange}
+                                className="block w-full rounded-md border-2 border-transparent bg-slate-800 text-white p-2 pl-10 focus:border-blue-500 focus:outline-none sm:text-sm placeholder-slate-400"
+                                min="0"
+                                step="0.01"
+                            />
+                        </div>
                     </div>
                 </div>
 

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
@@ -5,7 +6,7 @@ import { Page } from '../../App';
 import { 
     ChartBarIcon, BoxIcon, ArrowUpTrayIcon, ArrowDownTrayIcon, WrenchScrewdriverIcon, 
     BuildingStorefrontIcon, DocumentTextIcon, UsersIcon, CurrencyDollarIcon,
-    ClipboardDocumentCheckIcon, ShieldCheckIcon, ChatBubbleLeftRightIcon, DocumentChartBarIcon
+    ClipboardDocumentCheckIcon, ShieldCheckIcon, ChatBubbleLeftRightIcon, DocumentChartBarIcon, TagIcon
 } from '../icons/HeroIcons';
 import LogoIcon from '../icons/LogoIcon';
 
@@ -44,6 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) => {
     { page: 'dashboard', icon: <ChartBarIcon />, label: 'Dashboard', roles: [UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },
     { page: 'chat-ia', icon: <ChatBubbleLeftRightIcon />, label: 'Chat IA', roles: [UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },
     { page: 'materiais', icon: <BoxIcon />, label: 'Materiais', roles: [UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },
+    { page: 'consumiveis', icon: <TagIcon />, label: 'Consumíveis', roles: [UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },
     { page: 'entradas', icon: <ArrowUpTrayIcon />, label: 'Entradas', roles: [UserRole.OPERADOR, UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },
     { page: 'saidas', icon: <ArrowDownTrayIcon />, label: 'Saídas', roles: [UserRole.OPERADOR, UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },
     { page: 'consumo', icon: <WrenchScrewdriverIcon />, label: 'Consumo', roles: [UserRole.OPERADOR, UserRole.GERENTE, UserRole.DIRETOR, UserRole.VISITANTE] },

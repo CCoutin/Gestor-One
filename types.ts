@@ -29,7 +29,8 @@ export interface Material {
   armazenamento: string;
   entradas?: number;
   valorUnitario: number;
-  imageUrl?: string; // Novo campo para imagem do produto
+  imageUrl?: string;
+  categoria: 'ferramenta' | 'consumivel'; // Novo campo para categorização
 }
 
 export type MovimentacaoTipo = 'entrada' | 'saida' | 'consumo';
@@ -42,6 +43,7 @@ export interface Movimentacao {
   tipo: MovimentacaoTipo;
   data: string;
   notaFiscal?: string;
+  valorTotal?: number; // Novo campo para armazenar o valor total da transação
 }
 
 export interface Colaborador {

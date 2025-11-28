@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
@@ -13,10 +14,11 @@ import RevenuePage from './pages/RevenuePage';
 import InventoryPage from './pages/InventoryPage';
 import AccessManagementPage from './pages/AccessManagementPage';
 import ChatPage from './pages/ChatPage';
-import ReportsPage from './pages/ReportsPage'; // Importar a nova página
+import ReportsPage from './pages/ReportsPage';
+import ConsumablesPage from './pages/ConsumablesPage'; // Importar nova página
 import { UserRole } from './types';
 
-export type Page = 'dashboard' | 'materiais' | 'entradas' | 'saidas' | 'consumo' | 'parceiros' | 'notas' | 'colaboradores' | 'faturamento' | 'inventario' | 'gerenciar-acessos' | 'chat-ia' | 'relatorios';
+export type Page = 'dashboard' | 'materiais' | 'consumiveis' | 'entradas' | 'saidas' | 'consumo' | 'parceiros' | 'notas' | 'colaboradores' | 'faturamento' | 'inventario' | 'gerenciar-acessos' | 'chat-ia' | 'relatorios';
 
 const App: React.FC = () => {
   const { user } = useAuth();
@@ -43,6 +45,8 @@ const App: React.FC = () => {
         return <DashboardPage />;
       case 'materiais':
         return <MaterialsPage />;
+      case 'consumiveis': // Nova rota
+        return <ConsumablesPage />;
       case 'colaboradores':
         return <CollaboratorsPage />;
       case 'gerenciar-acessos':
@@ -64,7 +68,7 @@ const App: React.FC = () => {
       case 'chat-ia':
         return <ChatPage />;
       case 'relatorios':
-        return <ReportsPage />; // Adicionar o case para a página de relatórios
+        return <ReportsPage />;
       default:
         return <DashboardPage />;
     }

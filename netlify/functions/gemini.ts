@@ -1,3 +1,4 @@
+
 import { Handler } from "@netlify/functions";
 import { GoogleGenAI, Type, FunctionDeclaration, Part, Content } from "@google/genai";
 import { Parceiro, Movimentacao, NotaFiscal, Material, Colaborador, AIActionConfirmation } from '../../types';
@@ -211,6 +212,30 @@ const handler: Handler = async (event) => {
                     model: 'gemini-2.5-flash',
                     contents: prompt,
                     config: { responseMimeType: "application/json", responseSchema: forecastRevenueSchema }
+                });
+
+                return { statusCode: 200, headers, body: response.text };
+            }
+
+            case 'findMaterialImage': {
+                const { materialName } = body;
+                const prompt = `Find a high-quality, public image URL (jpg or png) for the hardware tool or construction material: "${materialName}".
+                Return ONLY a JSON object with a single field "imageUrl" containing the URL. Do not return markdown.`;
+
+                const response = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: prompt,
+                    config: {
+                        tools: [{ googleSearch: {} }],
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: Type.OBJECT,
+                            properties: {
+                                imageUrl: { type: Type.STRING, description: "The direct URL to the image found." }
+                            },
+                            required: ['imageUrl']
+                        }
+                    }
                 });
 
                 return { statusCode: 200, headers, body: response.text };
